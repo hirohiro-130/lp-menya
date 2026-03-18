@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>麺屋 醤 | 新宿区 本格ラーメン</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600;700;900&family=Shippori+Mincho:wght@400;500;600;700;800&family=Zen+Antique&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            shou: {
+              dark:    '#1f1209',
+              darker:  '#130b05',
+              brown:   '#2d1a0e',
+              red:     '#c0392b',
+              redDark: '#922b21',
+              gold:    '#d4a84b',
+              cream:   '#f5e6c8',
+              warm:    '#e8d5b0',
+              muted:   '#8c7358',
+            }
+          },
+          fontFamily: {
+            serif: ['"Shippori Mincho"', '"Noto Serif JP"', 'serif'],
+            zen:   ['"Zen Antique"', '"Noto Serif JP"', 'serif'],
+            noto:  ['"Noto Serif JP"', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* ── Base ── */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #1f1209;
+      color: #f5e6c8;
+      font-family: 'Noto Serif JP', serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Noise texture overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #130b05; }
+    ::-webkit-scrollbar-thumb { background: #c0392b; border-radius: 2px; }
+
+    /* ── Nav ── */
+    .nav-link {
+      position: relative;
+      color: #e8d5b0;
+      font-size: 0.8rem;
+      letter-spacing: 0.18em;
+      transition: color 0.3s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: #c0392b;
+      transition: width 0.35s cubic-bezier(.4,0,.2,1);
+    }
+    .nav-link:hover { color: #c0392b; }
+    .nav-link:hover::after { width: 100%; }
+
+    /* ── Hero ── */
+    .hero-bg {
+      position: relative;
+      background: #130b05;
+      overflow: hidden;
+      min-height: 100svh;
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        160deg,
+        rgba(19,11,5,0.15) 0%,
+        rgba(31,18,9,0.55) 40%,
+        rgba(19,11,5,0.85) 100%
+      );
+      z-index: 1;
+    }
+    .hero-img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: saturate(1.1) brightness(0.65);
+      transform: scale(1.04);
+      animation: heroZoom 12s ease-out forwards;
+    }
+    @keyframes heroZoom {
+      from { transform: scale(1.08); }
+      to   { transform: scale(1.0); }
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Vertical kanji sidebar */
+    .kanji-side {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-family: 'Zen Antique', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      color: rgba(192,57,43,0.6);
+      user-select: none;
+    }
+
+    /* ── Tagline ── */
+    .tagline {
+      font-family: 'Zen Antique', serif;
+      line-height: 1.25;
+    }
+
+    /* ── Divider ── */
+    .divider-red {
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .divider-red span {
+      flex: 1; height: 1px;
+      background: linear-gradient(90deg, transparent, #c0392b55);
+    }
+    .divider-red span:last-child {
+      background: linear-gradient(90deg, #c0392b55, transparent);
+    }
+
+    /* ── Section heading ── */
+    .sec-title {
+      font-family: 'Zen Antique', serif;
+      letter-spacing: 0.15em;
+    }
+    .sec-sub {
+      font-size: 0.7rem;
+      letter-spacing: 0.35em;
+      color: #c0392b;
+      text-transform: uppercase;
+    }
+
+    /* ── Kodawari cards ── */
+    .koda-card {
+      border: 1px solid rgba(212,168,75,0.15);
+      background: linear-gradient(145deg, rgba(45,26,14,0.6), rgba(19,11,5,0.8));
+      transition: transform 0.4s cubic-bezier(.4,0,.2,1), border-color 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+    .koda-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: #c0392b;
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.4s cubic-bezier(.4,0,.2,1);
+    }
+    .koda-card:hover { transform: translateY(-6px); border-color: rgba(192,57,43,0.4); }
+    .koda-card:hover::before { transform: scaleY(1); }
+    .koda-icon {
+      font-size: 2.2rem;
+      filter: drop-shadow(0 0 12px rgba(192,57,43,0.5));
+    }
+
+    /* ── Menu cards ── */
+    .menu-card {
+      background: #2d1a0e;
+      border: 1px solid rgba(212,168,75,0.1);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+      overflow: hidden;
+    }
+    .menu-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(192,57,43,0.3);
+    }
+    .menu-card img {
+      transition: transform 0.6s ease;
+    }
+    .menu-card:hover img { transform: scale(1.07); }
+    .price-badge {
+      background: #c0392b;
+      font-family: 'Shippori Mincho', serif;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Photo grid ── */
+    .photo-grid-item {
+      overflow: hidden;
+      position: relative;
+    }
+    .photo-grid-item img {
+      transition: transform 0.6s cubic-bezier(.4,0,.2,1), filter 0.4s;
+      filter: saturate(0.85);
+    }
+    .photo-grid-item:hover img {
+      transform: scale(1.08);
+      filter: saturate(1.1);
+    }
+    .photo-grid-item::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(19,11,5,0.25);
+      transition: opacity 0.4s;
+    }
+    .photo-grid-item:hover::after { opacity: 0; }
+
+    /* ── Seating cards ── */
+    .seat-card {
+      border-top: 2px solid #c0392b;
+      background: linear-gradient(180deg, #2d1a0e 0%, #1f1209 100%);
+      transition: transform 0.35s ease;
+    }
+    .seat-card:hover { transform: translateY(-5px); }
+
+    /* ── Voice (testimonial) cards ── */
+    .voice-card {
+      background: rgba(45,26,14,0.5);
+      border: 1px solid rgba(212,168,75,0.12);
+      position: relative;
+    }
+    .voice-card::before {
+      content: '';
+      position: absolute; top: -0.6rem; left: 1rem;
+      font-family: 'Zen Antique', serif;
+      font-size: 3.5rem;
+      color: rgba(192,57,43,0.25);
+      line-height: 1;
+    }
+
+    /* ── Map placeholder ── */
+    .map-frame {
+      border: 1px solid rgba(212,168,75,0.2);
+      overflow: hidden;
+    }
+
+    /* ── Info table ── */
+    .info-row {
+      border-bottom: 1px solid rgba(212,168,75,0.1);
+    }
+    .info-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      color: #c0392b;
+    }
+
+    /* ── Contact Form ── */
+    .contact-label {
+      display: block;
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      color: #c8b89a;
+      margin-bottom: 8px;
+      font-family: 'Shippori Mincho', serif;
+    }
+    .contact-required {
+      font-size: 0.6rem;
+      background: #c0392b;
+      color: #fff;
+      padding: 1px 6px;
+      border-radius: 2px;
+      letter-spacing: 0.1em;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .contact-input {
+      width: 100%;
+      background: rgba(45,26,14,0.6);
+      border: 1px solid rgba(212,168,75,0.2);
+      border-radius: 4px;
+      color: #f5e6c8;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.88rem;
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .contact-input:focus {
+      border-color: rgba(192,57,43,0.6);
+      box-shadow: 0 0 0 3px rgba(192,57,43,0.1);
+    }
+    .contact-input::placeholder { color: #5a4535; }
+    .contact-input option { background: #2d1a0e; color: #f5e6c8; }
+    .contact-input.input-error { border-color: rgba(192,57,43,0.8); }
+    .contact-error {
+      font-size: 0.72rem;
+      color: #e74c3c;
+      margin-top: 5px;
+      letter-spacing: 0.05em;
+      min-height: 1em;
+    }
+    .contact-radio {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      color: #c8b89a;
+      padding: 6px 12px;
+      border: 1px solid rgba(212,168,75,0.2);
+      border-radius: 4px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .contact-radio:hover { border-color: rgba(192,57,43,0.5); background: rgba(192,57,43,0.06); }
+    .contact-radio input[type="radio"] { accent-color: #c0392b; }
+
+    /* ── CTA ── */
+    .btn-red {
+      background: #c0392b;
+      transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+    }
+    .btn-red:hover {
+      background: #922b21;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(192,57,43,0.4);
+    }
+    .btn-outline {
+      border: 1.5px solid rgba(212,168,75,0.5);
+      color: #d4a84b;
+      transition: background 0.3s, border-color 0.3s, transform 0.2s;
+    }
+    .btn-outline:hover {
+      background: rgba(212,168,75,0.1);
+      border-color: #d4a84b;
+      transform: translateY(-2px);
+    }
+
+    /* ── Fade-in on scroll ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.75s cubic-bezier(.4,0,.2,1), transform 0.75s cubic-bezier(.4,0,.2,1);
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .fade-up.delay-1 { transition-delay: 0.12s; }
+    .fade-up.delay-2 { transition-delay: 0.24s; }
+    .fade-up.delay-3 { transition-delay: 0.36s; }
+    .fade-up.delay-4 { transition-delay: 0.48s; }
+    .fade-up.delay-5 { transition-delay: 0.60s; }
+    .fade-up.delay-6 { transition-delay: 0.72s; }
+
+    /* ── Star rating ── */
+    .star { color: #d4a84b; }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid rgba(212,168,75,0.12);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     NAVIGATION
+════════════════════════════════════════════ -->
+<header id="top" class="fixed top-0 left-0 right-0 z-50" style="background: rgba(19,11,5,0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(212,168,75,0.08);">
+  <div class="max-w-6xl mx-auto px-5 h-14 flex items-center justify-between">
+    <!-- Logo -->
+    <a href="#top" class="flex items-center gap-3">
+      <span style="font-family:'Zen Antique',serif; font-size:1.55rem; color:#d4a84b; letter-spacing:0.08em; line-height:1;">醤</span>
+      <div>
+        <p style="font-family:'Shippori Mincho',serif; font-size:0.95rem; font-weight:700; letter-spacing:0.2em; color:#f5e6c8; line-height:1.1;">麺屋 醤</p>
+        <p style="font-size:0.55rem; letter-spacing:0.3em; color:#8c7358; line-height:1; margin-top:2px;">MENYA SHOU</p>
+      </div>
+    </a>
+    <!-- Nav links (desktop) -->
+    <nav class="hidden md:flex items-center gap-7">
+      <a href="#kodawari" class="nav-link">こだわり</a>
+      <a href="#menu"     class="nav-link">メニュー</a>
+      <a href="#gallery"  class="nav-link">ギャラリー</a>
+      <a href="#voice"    class="nav-link">お客様の声</a>
+      <a href="#access"   class="nav-link">アクセス</a>
+      <a href="#contact"  class="nav-link">お問い合わせ</a>
+    </nav>
+    <!-- CTA -->
+    <a href="tel:0312345678" class="btn-red hidden md:inline-flex items-center gap-2 px-5 py-2 text-white font-bold rounded text-sm" style="font-family:'Shippori Mincho',serif; letter-spacing:0.1em;">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21L8.5 10.5s1.5 3.5 5 5l1.112-1.724a1 1 0 011.21-.502l4.493 1.498A1 1 0 0121 15.72V19a2 2 0 01-2 2h-1C9.163 21 3 14.837 3 7V5z"/></svg>
+      03-1234-5678
+    </a>
+    <!-- Hamburger (mobile) -->
+    <button id="mob-btn" class="md:hidden p-2 text-shou-cream" aria-label="メニュー">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <!-- Mobile nav -->
+  <div id="mob-nav" class="hidden md:hidden px-5 pb-4" style="background:rgba(19,11,5,0.97);">
+    <div class="flex flex-col gap-3 pt-2">
+      <a href="#kodawari" class="nav-link py-2 border-b" style="border-color:rgba(212,168,75,0.1);" onclick="document.getElementById('mob-nav').classList.add('hidden')">こだわり</a>
+      <a href="#menu"     class="nav-link py-2 border-b" style="border-color:rgba(212,168,75,0.1);" onclick="document.getElementById('mob-nav').classList.add('hidden')">メニュー</a>
+      <a href="#gallery"  class="nav-link py-2 border-b" style="border-color:rgba(212,168,75,0.1);" onclick="document.getElementById('mob-nav').classList.add('hidden')">ギャラリー</a>
+      <a href="#voice"    class="nav-link py-2 border-b" style="border-color:rgba(212,168,75,0.1);" onclick="document.getElementById('mob-nav').classList.add('hidden')">お客様の声</a>
+      <a href="#access"   class="nav-link py-2 border-b" style="border-color:rgba(212,168,75,0.1);" onclick="document.getElementById('mob-nav').classList.add('hidden')">アクセス</a>
+      <a href="#contact"  class="nav-link py-2" onclick="document.getElementById('mob-nav').classList.add('hidden')">お問い合わせ</a>
+      <a href="tel:0312345678" class="btn-red mt-1 py-3 text-center text-white font-bold rounded text-sm" style="font-family:'Shippori Mincho',serif;">03-1234-5678</a>
+    </div>
+  </div>
+</header>
+
+
+<!-- ════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════ -->
+<section class="hero-bg">
+
+  <!-- Kanji side accents -->
+  <div class="absolute left-5 top-1/2 -translate-y-1/2 z-10 hidden lg:flex flex-col items-center gap-4">
+    <div class="kanji-side" style="height:180px;">新宿・本格・手打麺</div>
+    <div style="width:1px; height:60px; background:linear-gradient(180deg, rgba(192,57,43,0.5), transparent);"></div>
+  </div>
+  <div class="absolute right-5 top-1/2 -translate-y-1/2 z-10 hidden lg:flex flex-col items-center gap-4">
+    <div style="width:1px; height:60px; background:linear-gradient(0deg, rgba(192,57,43,0.5), transparent);"></div>
+    <div class="kanji-side" style="height:160px;">醤油・豚骨・Wスープ</div>
+  </div>
+
+  <div class="hero-content min-h-svh flex flex-col justify-center items-center text-center px-6 pt-14 pb-24">
+    <!-- Badge -->
+    <div class="mb-8 inline-flex items-center gap-3 fade-up">
+      <div style="width:32px; height:1px; background:#c0392b;"></div>
+      <span style="font-size:0.65rem; letter-spacing:0.45em; color:#c0392b; font-family:'Shippori Mincho',serif;">TOKYO SHINJUKU 新宿</span>
+      <div style="width:32px; height:1px; background:#c0392b;"></div>
+    </div>
+
+    <!-- Main tagline -->
+    <h1 class="tagline fade-up delay-1 mb-6" style="font-size:clamp(2.8rem,8vw,6.5rem); font-weight:900; line-height:1.1; color:#f5e6c8; text-shadow:0 4px 40px rgba(0,0,0,0.8);">
+      一杯に、<br />
+      <span style="color:#d4a84b;">魂</span>を込めて
+    </h1>
+
+    <!-- Sub copy -->
+    <p class="fade-up delay-2 mb-2" style="font-size:clamp(0.85rem,2.5vw,1.05rem); color:#c8b89a; letter-spacing:0.25em; font-weight:300;">
+      豚骨×醤油 Wスープ ／ 自家製麺
+    </p>
+    <p class="fade-up delay-3 mb-10" style="font-size:0.75rem; letter-spacing:0.3em; color:#8c7358;">
+      東京都新宿区 ／ 行列のできる本格ラーメン店
+    </p>
+
+    <!-- Buttons -->
+    <div class="fade-up delay-4 flex flex-col sm:flex-row gap-4 items-center">
+      <a href="#menu" class="btn-red px-10 py-4 text-white font-bold rounded text-base" style="font-family:'Shippori Mincho',serif; letter-spacing:0.2em;">
+        メニューを見る
+      </a>
+      <a href="#access" class="btn-outline px-8 py-4 font-bold rounded text-sm" style="font-family:'Shippori Mincho',serif; letter-spacing:0.2em;">
+        アクセスを確認
+      </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="fade-up delay-5 mt-16 flex gap-10 sm:gap-16">
+      <div class="text-center">
+        <p style="font-family:'Zen Antique',serif; font-size:2rem; color:#d4a84b; line-height:1;">15<span style="font-size:0.9rem;">年</span></p>
+        <p style="font-size:0.65rem; letter-spacing:0.3em; color:#8c7358; margin-top:4px;">創業</p>
+      </div>
+      <div style="width:1px; background:rgba(212,168,75,0.2);"></div>
+      <div class="text-center">
+        <p style="font-family:'Zen Antique',serif; font-size:2rem; color:#d4a84b; line-height:1;">4.8<span style="font-size:0.9rem;">★</span></p>
+        <p style="font-size:0.65rem; letter-spacing:0.3em; color:#8c7358; margin-top:4px;">食べログ評価</p>
+      </div>
+      <div style="width:1px; background:rgba(212,168,75,0.2);"></div>
+      <div class="text-center">
+        <p style="font-family:'Zen Antique',serif; font-size:2rem; color:#d4a84b; line-height:1;">日<span style="font-size:0.9rem;">替わり</span></p>
+        <p style="font-size:0.65rem; letter-spacing:0.3em; color:#8c7358; margin-top:4px;">限定メニュー</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2" style="animation: bounce 2.2s ease-in-out infinite;">
+    <p style="font-size:0.6rem; letter-spacing:0.4em; color:#8c7358;">SCROLL</p>
+    <div style="width:1px; height:40px; background:linear-gradient(180deg, rgba(192,57,43,0.7), transparent);"></div>
+  </div>
+</section>
+
+<style>
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50%       { transform: translateX(-50%) translateY(8px); }
+  }
+</style>
+
+
+<!-- ════════════════════════════════════════════
+     KODAWARI（こだわり）
+════════════════════════════════════════════ -->
+<section id="kodawari" class="py-24 px-5" style="background: linear-gradient(180deg, #130b05 0%, #1f1209 100%);">
+  <div class="max-w-5xl mx-auto">
+
+    <!-- Heading -->
+    <div class="text-center mb-16 fade-up">
+      <p class="sec-sub mb-3">OUR COMMITMENT</p>
+      <h2 class="sec-title text-4xl md:text-5xl mb-4" style="color:#f5e6c8;">職人の、こだわり。</h2>
+      <div class="divider-red justify-center mt-6 max-w-xs mx-auto">
+        <span></span>
+        <span style="font-family:'Zen Antique',serif; font-size:1.2rem; color:#c0392b; flex:none;">醤</span>
+        <span></span>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- スープ -->
+      <div class="koda-card rounded-lg p-8 fade-up delay-1">
+        <div class="koda-icon mb-5">🍜</div>
+        <p style="font-size:0.65rem; letter-spacing:0.4em; color:#c0392b; margin-bottom:8px;">SOUP</p>
+        <h3 class="sec-title text-2xl mb-4" style="color:#d4a84b;">Wスープ</h3>
+        <p style="font-size:0.9rem; line-height:2; color:#c8b89a; font-weight:300;">
+          豚骨を18時間じっくり炊き出した白濁スープと、丸鶏・鰹・昆布を合わせた清澄な醤油ダレを独自の配合で融合。重厚感と繊細さが共存する、唯一無二の一杯。
+        </p>
+      </div>
+      <!-- 麺 -->
+      <div class="koda-card rounded-lg p-8 fade-up delay-2">
+        <div class="koda-icon mb-5">🌾</div>
+        <p style="font-size:0.65rem; letter-spacing:0.4em; color:#c0392b; margin-bottom:8px;">NOODLE</p>
+        <h3 class="sec-title text-2xl mb-4" style="color:#d4a84b;">自家製麺</h3>
+        <p style="font-size:0.9rem; line-height:2; color:#c8b89a; font-weight:300;">
+          北海道産強力粉と国産小麦をブレンドし、毎朝店内で製麺。もっちりとした弾力とコシを生む中細縮れ麺は、濃厚スープとの相性が抜群。打ちたての旨みをそのままお届けします。
+        </p>
+      </div>
+      <!-- トッピング -->
+      <div class="koda-card rounded-lg p-8 fade-up delay-3">
+        <div class="koda-icon mb-5">🥩</div>
+        <p style="font-size:0.65rem; letter-spacing:0.4em; color:#c0392b; margin-bottom:8px;">TOPPING</p>
+        <h3 class="sec-title text-2xl mb-4" style="color:#d4a84b;">特製トッピング</h3>
+        <p style="font-size:0.9rem; line-height:2; color:#c8b89a; font-weight:300;">
+          低温調理で仕上げた肉厚チャーシュー、半熟に味付けした味玉、風味豊かな国産メンマ。それぞれの食材を丁寧に下処理し、スープを引き立てる名脇役として仕上げています。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     MENU（おすすめメニュー）
+════════════════════════════════════════════ -->
+<section id="menu" class="py-24 px-5" style="background: #1f1209;">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="text-center mb-16 fade-up">
+      <p class="sec-sub mb-3">RECOMMENDED MENU</p>
+      <h2 class="sec-title text-4xl md:text-5xl mb-4" style="color:#f5e6c8;">おすすめメニュー</h2>
+      <p style="font-size:0.85rem; color:#8c7358; letter-spacing:0.15em; margin-top:12px;">職人が選び抜いた、看板メニュー三選</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+
+      <!-- Menu 1 -->
+      <div class="menu-card rounded-lg fade-up delay-1">
+        <div class="relative overflow-hidden" style="height:220px;">
+          <span class="absolute top-3 right-3 price-badge text-white text-sm px-3 py-1 rounded">¥980</span>
+        </div>
+        <div class="p-6">
+          <p style="font-size:0.6rem; letter-spacing:0.4em; color:#c0392b; margin-bottom:6px;">SIGNATURE</p>
+          <h3 class="sec-title text-xl mb-3" style="color:#f5e6c8;">特製醤油ラーメン</h3>
+          <p style="font-size:0.82rem; line-height:1.9; color:#8c7358; font-weight:300;">
+            Wスープに秘伝醤油ダレを合わせた看板の一杯。チャーシュー・味玉・穂先メンマ付き。
+          </p>
+          <div class="mt-4 pt-4" style="border-top:1px solid rgba(212,168,75,0.1);">
+            <div class="flex gap-1">
+              <span class="star text-sm">★★★★★</span>
+            </div>
+            <p style="font-size:0.65rem; color:#8c7358; margin-top:4px; letter-spacing:0.1em;">最もご注文の多い定番</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Menu 2 -->
+      <div class="menu-card rounded-lg fade-up delay-2" style="transform: translateY(-16px);">
+        <div class="relative overflow-hidden" style="height:220px;">
+          <span class="absolute top-3 right-3 price-badge text-white text-sm px-3 py-1 rounded">¥1,200</span>
+          <div class="absolute top-3 left-3" style="background:#d4a84b; color:#1f1209; font-size:0.6rem; font-weight:800; padding:3px 8px; border-radius:2px; letter-spacing:0.15em; font-family:'Shippori Mincho',serif;">人気 No.1</div>
+        </div>
+        <div class="p-6">
+          <p style="font-size:0.6rem; letter-spacing:0.4em; color:#c0392b; margin-bottom:6px;">POPULAR</p>
+          <h3 class="sec-title text-xl mb-3" style="color:#f5e6c8;">濃厚豚骨醤油ラーメン</h3>
+          <p style="font-size:0.82rem; line-height:1.9; color:#8c7358; font-weight:300;">
+            豚骨をさらに強く炊き出した濃厚版。旨みの深さが段違い。厚切りチャーシュー2枚・味玉・海苔・メンマ付き。
+          </p>
+          <div class="mt-4 pt-4" style="border-top:1px solid rgba(212,168,75,0.1);">
+            <div class="flex gap-1">
+              <span class="star text-sm">★★★★★</span>
+            </div>
+            <p style="font-size:0.65rem; color:#8c7358; margin-top:4px; letter-spacing:0.1em;">リピーター率 No.1</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Menu 3 -->
+      <div class="menu-card rounded-lg fade-up delay-3">
+        <div class="relative overflow-hidden" style="height:220px;">
+          <span class="absolute top-3 right-3 price-badge text-white text-sm px-3 py-1 rounded">¥1,500</span>
+        </div>
+        <div class="p-6">
+          <p style="font-size:0.6rem; letter-spacing:0.4em; color:#c0392b; margin-bottom:6px;">PREMIUM</p>
+          <h3 class="sec-title text-xl mb-3" style="color:#f5e6c8;">特上全部入りラーメン</h3>
+          <p style="font-size:0.82rem; line-height:1.9; color:#8c7358; font-weight:300;">
+            チャーシュー3枚・特製味玉・メンマ・なると・海苔・ネギを全部乗せ。醤の真髄を全力で味わいたい方へ。
+          </p>
+          <div class="mt-4 pt-4" style="border-top:1px solid rgba(212,168,75,0.1);">
+            <div class="flex gap-1">
+              <span class="star text-sm">★★★★★</span>
+            </div>
+            <p style="font-size:0.65rem; color:#8c7358; margin-top:4px; letter-spacing:0.1em;">記念日・ご褒美の一杯に</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Note -->
+    <p class="text-center mt-8 fade-up" style="font-size:0.72rem; color:#8c7358; letter-spacing:0.15em;">
+      ※ 表示価格は税込です。季節限定メニューはお店にてご確認ください。
+    </p>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     GALLERY（メニューハイライト）
+════════════════════════════════════════════ -->
+<section id="gallery" class="py-24" style="background: #130b05;">
+  <div class="max-w-5xl mx-auto px-5">
+    <div class="text-center mb-14 fade-up">
+      <p class="sec-sub mb-3">GALLERY</p>
+      <h2 class="sec-title text-4xl md:text-5xl" style="color:#f5e6c8;">一皿一皿に、誠実に。</h2>
+    </div>
+  </div>
+
+  <!-- 2col × 3row grid -->
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-1 max-w-5xl mx-auto px-0">
+    <div class="photo-grid-item aspect-square fade-up delay-1">
+    </div>
+    <div class="photo-grid-item aspect-square fade-up delay-2">
+    </div>
+    <div class="photo-grid-item aspect-square fade-up delay-3">
+    </div>
+    <div class="photo-grid-item aspect-square fade-up delay-4">
+    </div>
+    <div class="photo-grid-item aspect-square fade-up delay-5">
+    </div>
+    <div class="photo-grid-item aspect-square fade-up delay-6">
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     SEATING（店内紹介）
+════════════════════════════════════════════ -->
+<section id="seating" class="py-24 px-5" style="background: linear-gradient(180deg, #1f1209 0%, #130b05 100%);">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="text-center mb-16 fade-up">
+      <p class="sec-sub mb-3">INTERIOR</p>
+      <h2 class="sec-title text-4xl md:text-5xl mb-4" style="color:#f5e6c8;">居心地のいい、空間へ。</h2>
+      <p style="font-size:0.85rem; color:#8c7358; letter-spacing:0.15em;">おひとり様から、グループまで。</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+
+      <!-- カウンター席 -->
+      <div class="seat-card rounded-lg overflow-hidden fade-up delay-1">
+        <div style="height:200px; overflow:hidden;">
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-2 mb-3">
+            <span style="color:#c0392b;">◆</span>
+            <h3 class="sec-title text-lg" style="color:#f5e6c8;">カウンター席</h3>
+          </div>
+          <p style="font-size:0.65rem; letter-spacing:0.3em; color:#c0392b; margin-bottom:10px;">8席</p>
+          <p style="font-size:0.82rem; line-height:1.9; color:#8c7358; font-weight:300;">
+            目の前で職人の手仕事を感じながら一人静かに楽しめる特等席。ランチタイムのお一人様に最適。
+          </p>
+        </div>
+      </div>
+
+      <!-- テーブル席 -->
+      <div class="seat-card rounded-lg overflow-hidden fade-up delay-2">
+        <div style="height:200px; overflow:hidden;">
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-2 mb-3">
+            <span style="color:#c0392b;">◆</span>
+            <h3 class="sec-title text-lg" style="color:#f5e6c8;">テーブル席</h3>
+          </div>
+          <p style="font-size:0.65rem; letter-spacing:0.3em; color:#c0392b; margin-bottom:10px;">12席（4名×3卓）</p>
+          <p style="font-size:0.82rem; line-height:1.9; color:#8c7358; font-weight:300;">
+            ゆったりとしたテーブルで仲間とワイワイ。グループでのランチやディナーに。
+          </p>
+        </div>
+      </div>
+
+      <!-- テイクアウト -->
+      <div class="seat-card rounded-lg overflow-hidden fade-up delay-3">
+        <div style="height:200px; overflow:hidden;">
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-2 mb-3">
+            <span style="color:#c0392b;">◆</span>
+            <h3 class="sec-title text-lg" style="color:#f5e6c8;">テイクアウト</h3>
+          </div>
+          <p style="font-size:0.65rem; letter-spacing:0.3em; color:#c0392b; margin-bottom:10px;">冷凍生麺・スープセット</p>
+          <p style="font-size:0.82rem; line-height:1.9; color:#8c7358; font-weight:300;">
+            自宅で楽しめる冷凍生麺セットを販売中。手土産・ギフトにも大好評です。
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     VOICE（お客様の声）
+════════════════════════════════════════════ -->
+<section id="voice" class="py-24 px-5" style="background:#130b05;">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="text-center mb-16 fade-up">
+      <p class="sec-sub mb-3">CUSTOMER VOICE</p>
+      <h2 class="sec-title text-4xl md:text-5xl mb-4" style="color:#f5e6c8;">お客様の声</h2>
+      <div class="flex justify-center gap-1 mt-4">
+        <span class="star text-xl">★★★★★</span>
+      </div>
+      <p style="font-size:0.75rem; color:#8c7358; margin-top:6px; letter-spacing:0.15em;">食べログ 4.8 / 5.0（2024年実績）</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+
+      <div class="voice-card rounded-lg p-7 fade-up delay-1">
+        <div class="flex gap-1 mb-4">
+          <span class="star text-sm">★★★★★</span>
+        </div>
+        <p style="font-size:0.88rem; line-height:2; color:#c8b89a; font-weight:300; font-style:italic;">
+          スープが本当に最高。豚骨の深みと醤油の香りが絶妙で、毎週通っても飽きません。麺のコシも格別。新宿で一番好きなラーメン屋です。
+        </p>
+        <div class="mt-5 pt-4 flex items-center gap-3" style="border-top:1px solid rgba(212,168,75,0.1);">
+          <div style="width:36px; height:36px; border-radius:50%; background:#2d1a0e; border:1px solid rgba(212,168,75,0.2); display:flex; align-items:center; justify-content:center;">
+            <span style="color:#d4a84b; font-size:1rem; font-family:'Zen Antique',serif;">田</span>
+          </div>
+          <div>
+            <p style="font-size:0.82rem; font-weight:600; color:#f5e6c8; font-family:'Shippori Mincho',serif;">田中 K. 様</p>
+            <p style="font-size:0.65rem; color:#8c7358; letter-spacing:0.1em;">30代男性 / 週1回来店</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="voice-card rounded-lg p-7 fade-up delay-2">
+        <div class="flex gap-1 mb-4">
+          <span class="star text-sm">★★★★★</span>
+        </div>
+        <p style="font-size:0.88rem; line-height:2; color:#c8b89a; font-weight:300; font-style:italic;">
+          テイクアウトの冷凍セットを買って家で作ったら、お店と同じ味でびっくり。プレゼントとしても喜ばれました。接客も丁寧で大好きなお店です。
+        </p>
+        <div class="mt-5 pt-4 flex items-center gap-3" style="border-top:1px solid rgba(212,168,75,0.1);">
+          <div style="width:36px; height:36px; border-radius:50%; background:#2d1a0e; border:1px solid rgba(212,168,75,0.2); display:flex; align-items:center; justify-content:center;">
+            <span style="color:#d4a84b; font-size:1rem; font-family:'Zen Antique',serif;">鈴</span>
+          </div>
+          <div>
+            <p style="font-size:0.82rem; font-weight:600; color:#f5e6c8; font-family:'Shippori Mincho',serif;">鈴木 M. 様</p>
+            <p style="font-size:0.65rem; color:#8c7358; letter-spacing:0.1em;">20代女性 / リピーター</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="voice-card rounded-lg p-7 fade-up delay-3">
+        <div class="flex gap-1 mb-4">
+          <span class="star text-sm">★★★★★</span>
+        </div>
+        <p style="font-size:0.88rem; line-height:2; color:#c8b89a; font-weight:300; font-style:italic;">
+          行列覚悟で訪問しましたが、並ぶ価値がありました。チャーシューが柔らかくて絶品。自家製麺のモチモチ感がたまらない。東京一だと思います。
+        </p>
+        <div class="mt-5 pt-4 flex items-center gap-3" style="border-top:1px solid rgba(212,168,75,0.1);">
+          <div style="width:36px; height:36px; border-radius:50%; background:#2d1a0e; border:1px solid rgba(212,168,75,0.2); display:flex; align-items:center; justify-content:center;">
+            <span style="color:#d4a84b; font-size:1rem; font-family:'Zen Antique',serif;">佐</span>
+          </div>
+          <div>
+            <p style="font-size:0.82rem; font-weight:600; color:#f5e6c8; font-family:'Shippori Mincho',serif;">佐々木 R. 様</p>
+            <p style="font-size:0.65rem; color:#8c7358; letter-spacing:0.1em;">40代男性 / 初来店</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     ACCESS（アクセス・営業時間）
+════════════════════════════════════════════ -->
+<section id="access" class="py-24 px-5" style="background: linear-gradient(180deg, #1f1209 0%, #2d1a0e 100%);">
+  <div class="max-w-5xl mx-auto">
+
+    <div class="text-center mb-16 fade-up">
+      <p class="sec-sub mb-3">ACCESS & HOURS</p>
+      <h2 class="sec-title text-4xl md:text-5xl" style="color:#f5e6c8;">アクセス・営業時間</h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-10 items-start">
+
+      <!-- Map -->
+      <div class="fade-up delay-1">
+        <div class="map-frame rounded-lg overflow-hidden" style="height:340px; position:relative; background:#2d1a0e;">
+          <!-- Pin overlay -->
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div style="text-align:center;">
+              <div style="width:50px; height:50px; background:#c0392b; border-radius:50% 50% 50% 0; transform:rotate(-45deg); margin:0 auto 8px; box-shadow:0 4px 20px rgba(192,57,43,0.5);"></div>
+              <div style="background:rgba(19,11,5,0.85); padding:10px 20px; border-radius:4px; border:1px solid rgba(212,168,75,0.3);">
+                <p style="font-family:'Zen Antique',serif; color:#d4a84b; font-size:0.9rem; letter-spacing:0.2em;">麺屋 醤</p>
+                <p style="font-size:0.65rem; color:#8c7358; margin-top:4px;">東京都新宿区西新宿X-X-X</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transport info -->
+        <div class="mt-4 grid grid-cols-2 gap-3">
+          <div style="background:rgba(19,11,5,0.6); border:1px solid rgba(212,168,75,0.1); border-radius:6px; padding:12px 14px;">
+            <p style="font-size:0.6rem; letter-spacing:0.3em; color:#c0392b; margin-bottom:6px;">🚉 最寄り駅</p>
+            <p style="font-size:0.82rem; color:#f5e6c8; font-family:'Shippori Mincho',serif; font-weight:600;">新宿駅 西口</p>
+            <p style="font-size:0.72rem; color:#8c7358; margin-top:3px;">徒歩 約5分</p>
+          </div>
+          <div style="background:rgba(19,11,5,0.6); border:1px solid rgba(212,168,75,0.1); border-radius:6px; padding:12px 14px;">
+            <p style="font-size:0.6rem; letter-spacing:0.3em; color:#c0392b; margin-bottom:6px;">🅿️ 駐車場</p>
+            <p style="font-size:0.82rem; color:#f5e6c8; font-family:'Shippori Mincho',serif; font-weight:600;">近隣コインPあり</p>
+            <p style="font-size:0.72rem; color:#8c7358; margin-top:3px;">徒歩1分圏内 複数箇所</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info table -->
+      <div class="fade-up delay-2">
+        <div style="background:rgba(19,11,5,0.5); border:1px solid rgba(212,168,75,0.12); border-radius:10px; overflow:hidden;">
+
+          <div class="info-row px-6 py-5 grid grid-cols-3 gap-4 items-start">
+            <p class="info-label">住所</p>
+            <p class="col-span-2" style="font-size:0.88rem; color:#c8b89a; line-height:1.8;">東京都新宿区西新宿X丁目X番X号<br/>サンプルビル 1F</p>
+          </div>
+
+          <div class="info-row px-6 py-5 grid grid-cols-3 gap-4 items-start">
+            <p class="info-label">電話</p>
+            <p class="col-span-2" style="font-size:0.88rem; color:#c8b89a;">
+              <a href="tel:0312345678" style="color:#d4a84b; font-family:'Shippori Mincho',serif; font-weight:700; font-size:1.1rem;">03-1234-5678</a>
+            </p>
+          </div>
+
+          <div class="info-row px-6 py-5 grid grid-cols-3 gap-4 items-start">
+            <p class="info-label">営業時間</p>
+            <div class="col-span-2" style="font-size:0.85rem; color:#c8b89a; line-height:2;">
+              <div class="flex justify-between">
+                <span>ランチ</span><span style="color:#d4a84b; font-family:'Shippori Mincho',serif;">11:00 〜 14:30</span>
+              </div>
+              <div class="flex justify-between">
+                <span>ディナー</span><span style="color:#d4a84b; font-family:'Shippori Mincho',serif;">17:30 〜 22:00</span>
+              </div>
+              <p style="font-size:0.72rem; color:#8c7358; margin-top:4px;">※ スープ切れ次第終了</p>
+            </div>
+          </div>
+
+          <div class="info-row px-6 py-5 grid grid-cols-3 gap-4 items-start">
+            <p class="info-label">定休日</p>
+            <p class="col-span-2" style="font-size:0.88rem; color:#c8b89a;">
+              毎週 <span style="color:#f5e6c8; font-weight:600;">火曜日</span>
+              <span style="font-size:0.72rem; color:#8c7358; display:block; margin-top:2px;">祝日の場合は翌日休</span>
+            </p>
+          </div>
+
+          <div class="px-6 py-5 grid grid-cols-3 gap-4 items-start">
+            <p class="info-label">支払方法</p>
+            <p class="col-span-2" style="font-size:0.85rem; color:#c8b89a; line-height:1.9;">現金・各種クレジットカード<br/>PayPay・交通系IC</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     CONTACT（お問い合わせフォーム）
+════════════════════════════════════════════ -->
+<section id="contact" class="py-24 px-5" style="background: linear-gradient(180deg, #130b05 0%, #1f1209 100%);">
+  <div class="max-w-3xl mx-auto">
+
+    <div class="text-center mb-14 fade-up">
+      <p class="sec-sub mb-3">CONTACT</p>
+      <h2 class="sec-title text-4xl md:text-5xl mb-4" style="color:#f5e6c8;">お問い合わせ</h2>
+      <p style="font-size:0.85rem; color:#8c7358; line-height:2; letter-spacing:0.1em;">
+        ご来店前のご質問・ご要望はこちらからお気軽にどうぞ。<br />
+        確認後、担当者よりご連絡いたします。
+      </p>
+    </div>
+
+    <!-- サンクスメッセージ（送信後に表示） -->
+    <div id="contact-thanks" style="display:none;" class="text-center py-16 fade-up">
+      <div style="width:64px; height:64px; border-radius:50%; background:rgba(192,57,43,0.15); border:1px solid rgba(192,57,43,0.4); display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="#c0392b" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <h3 class="sec-title text-2xl mb-4" style="color:#d4a84b;">お問い合わせありがとうございます</h3>
+      <p style="font-size:0.88rem; color:#c8b89a; line-height:2.2; letter-spacing:0.1em;">
+        内容を確認後、担当者よりご連絡いたします。<br />
+        しばらくお待ちください。
+      </p>
+    </div>
+
+    <!-- フォーム本体 -->
+    <form id="contact-form"
+          action="https://formspree.io/f/あなたのID"
+          method="POST"
+          class="fade-up"
+          novalidate>
+
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <!-- お名前 -->
+        <div>
+          <label class="contact-label">お名前 <span class="contact-required">必須</span></label>
+          <input type="text" name="name" placeholder="山田 太郎" class="contact-input" />
+          <p class="contact-error" id="err-name"></p>
+        </div>
+        <!-- 電話番号 -->
+        <div>
+          <label class="contact-label">電話番号 <span class="contact-required">必須</span></label>
+          <input type="tel" name="phone" placeholder="090-0000-0000" class="contact-input" />
+          <p class="contact-error" id="err-phone"></p>
+        </div>
+        <!-- メールアドレス -->
+        <div>
+          <label class="contact-label">メールアドレス <span class="contact-required">必須</span></label>
+          <input type="email" name="email" placeholder="example@mail.com" class="contact-input" />
+          <p class="contact-error" id="err-email"></p>
+        </div>
+        <!-- ご来店希望日 -->
+        <div>
+          <label class="contact-label">ご来店希望日</label>
+          <input type="date" name="visit_date" class="contact-input" />
+          <p class="contact-error" id="err-date"></p>
+        </div>
+        <!-- ご来店希望時間 -->
+        <div>
+          <label class="contact-label">ご来店希望時間</label>
+          <select name="visit_time" class="contact-input">
+            <option value="">-- 時間を選択 --</option>
+            <option>11:00</option><option>11:30</option>
+            <option>12:00</option><option>12:30</option>
+            <option>13:00</option><option>13:30</option>
+            <option>14:00</option>
+            <option>17:30</option><option>18:00</option><option>18:30</option>
+            <option>19:00</option><option>19:30</option>
+            <option>20:00</option><option>20:30</option>
+            <option>21:00</option>
+          </select>
+        </div>
+        <!-- ご利用人数 -->
+        <div>
+          <label class="contact-label">ご利用人数</label>
+          <select name="party_size" class="contact-input">
+            <option value="">-- 人数を選択 --</option>
+            <option>1名</option><option>2名</option><option>3名</option>
+            <option>4名</option><option>5名</option><option>6名</option>
+            <option>7名</option><option>8名</option><option>9名</option>
+            <option>10名</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <!-- ご利用目的 -->
+        <div>
+          <label class="contact-label">ご利用目的</label>
+          <div class="flex flex-wrap gap-3 mt-2">
+            <label class="contact-radio"><input type="radio" name="purpose" value="ランチ" /><span>ランチ</span></label>
+            <label class="contact-radio"><input type="radio" name="purpose" value="夕食" /><span>夕食</span></label>
+            <label class="contact-radio"><input type="radio" name="purpose" value="テイクアウト" /><span>テイクアウト</span></label>
+            <label class="contact-radio"><input type="radio" name="purpose" value="その他" /><span>その他</span></label>
+          </div>
+        </div>
+        <!-- 席の希望 -->
+        <div>
+          <label class="contact-label">席の希望</label>
+          <div class="flex flex-wrap gap-3 mt-2">
+            <label class="contact-radio"><input type="radio" name="seat" value="カウンター" /><span>カウンター</span></label>
+            <label class="contact-radio"><input type="radio" name="seat" value="テーブル" /><span>テーブル</span></label>
+            <label class="contact-radio"><input type="radio" name="seat" value="どちらでも" checked /><span>どちらでも</span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- アレルギー -->
+      <div class="mb-6">
+        <label class="contact-label">アレルギー・苦手な食材 <span style="font-size:0.65rem; color:#8c7358; letter-spacing:0.1em;">任意</span></label>
+        <input type="text" name="allergy" placeholder="例：えび、小麦" class="contact-input" />
+      </div>
+
+      <!-- ご要望 -->
+      <div class="mb-8">
+        <label class="contact-label">ご要望・メッセージ <span style="font-size:0.65rem; color:#8c7358; letter-spacing:0.1em;">任意</span></label>
+        <textarea name="message" rows="5" placeholder="記念日のご利用、お子様連れなどお気軽にご記入ください。" class="contact-input resize-none"></textarea>
+      </div>
+
+      <!-- 送信ボタン -->
+      <div class="text-center">
+        <button type="submit" id="contact-submit"
+                class="btn-red px-14 py-4 text-white font-bold rounded text-base inline-flex items-center gap-3"
+                style="font-family:'Shippori Mincho',serif; letter-spacing:0.2em; transition:opacity 0.3s;">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+          送信する
+        </button>
+        <p style="font-size:0.72rem; color:#8c7358; margin-top:12px; letter-spacing:0.1em;">※ 送信後、自動返信メールはございません。担当者より直接ご連絡します。</p>
+      </div>
+
+    </form>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     CTA
+════════════════════════════════════════════ -->
+<section id="cta" style="background: #c0392b; position:relative; overflow:hidden;">
+  <!-- Background texture -->
+  <div style="position:absolute; inset:0; background:repeating-linear-gradient(45deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 8px); pointer-events:none;"></div>
+  <div style="position:absolute; top:-60px; right:-60px; width:240px; height:240px; border-radius:50%; background:rgba(0,0,0,0.08);"></div>
+  <div style="position:absolute; bottom:-40px; left:-40px; width:180px; height:180px; border-radius:50%; background:rgba(0,0,0,0.06);"></div>
+
+  <div class="relative max-w-4xl mx-auto px-6 py-20 text-center">
+    <p style="font-size:0.65rem; letter-spacing:0.5em; color:rgba(255,255,255,0.7); margin-bottom:14px; font-family:'Shippori Mincho',serif;">COME VISIT US</p>
+    <h2 class="sec-title text-4xl md:text-5xl mb-4 fade-up" style="color:#fff; text-shadow:0 2px 20px rgba(0,0,0,0.2);">今すぐ、来店の準備を。</h2>
+    <p class="fade-up delay-1 mb-10" style="font-size:0.9rem; color:rgba(255,255,255,0.8); line-height:2; letter-spacing:0.1em;">
+      新宿で行列のできる本格ラーメン。<br class="hidden sm:block" />
+      豚骨×醤油の一杯が、あなたを待っています。
+    </p>
+
+    <div class="fade-up delay-2 flex flex-col sm:flex-row justify-center gap-4">
+      <!-- 電話 -->
+      <a href="tel:0312345678"
+         class="inline-flex items-center justify-center gap-3 px-10 py-4 rounded font-bold text-base"
+         style="background:rgba(19,11,5,0.9); color:#f5e6c8; font-family:'Shippori Mincho',serif; letter-spacing:0.15em; transition: transform 0.2s, box-shadow 0.2s; box-shadow:0 4px 20px rgba(0,0,0,0.3);"
+         onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 30px rgba(0,0,0,0.4)';"
+         onmouseout="this.style.transform=''; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.3)';">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="color:#d4a84b;"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21L8.5 10.5s1.5 3.5 5 5l1.112-1.724a1 1 0 011.21-.502l4.493 1.498A1 1 0 0121 15.72V19a2 2 0 01-2 2h-1C9.163 21 3 14.837 3 7V5z"/></svg>
+        03-1234-5678 に電話する
+      </a>
+      <!-- Google Map -->
+      <a href="#"
+         class="inline-flex items-center justify-center gap-3 px-10 py-4 rounded font-bold text-base"
+         style="background:rgba(255,255,255,0.15); color:#fff; border:1.5px solid rgba(255,255,255,0.4); font-family:'Shippori Mincho',serif; letter-spacing:0.1em; transition: background 0.3s, transform 0.2s;"
+         onmouseover="this.style.background='rgba(255,255,255,0.25)'; this.style.transform='translateY(-3px)';"
+         onmouseout="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='';">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Googleマップで見る
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
+<footer class="py-12 px-5" style="background:#130b05;">
+  <div class="max-w-5xl mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+      <!-- Brand -->
+      <div class="text-center md:text-left">
+        <div class="flex items-center justify-center md:justify-start gap-3 mb-3">
+          <span style="font-family:'Zen Antique',serif; font-size:2rem; color:#d4a84b; line-height:1;">醤</span>
+          <div>
+            <p style="font-family:'Shippori Mincho',serif; font-size:1.1rem; font-weight:700; letter-spacing:0.2em; color:#f5e6c8;">麺屋 醤</p>
+            <p style="font-size:0.6rem; letter-spacing:0.35em; color:#8c7358;">MENYA SHOU</p>
+          </div>
+        </div>
+        <p style="font-size:0.75rem; color:#8c7358; letter-spacing:0.1em; line-height:1.8;">東京都新宿区西新宿X丁目X番X号<br/>Tel: 03-1234-5678</p>
+      </div>
+
+      <!-- Links -->
+      <nav class="flex flex-wrap justify-center gap-6">
+        <a href="#kodawari" class="nav-link" style="font-size:0.78rem;">こだわり</a>
+        <a href="#menu"     class="nav-link" style="font-size:0.78rem;">メニュー</a>
+        <a href="#gallery"  class="nav-link" style="font-size:0.78rem;">ギャラリー</a>
+        <a href="#voice"    class="nav-link" style="font-size:0.78rem;">お客様の声</a>
+        <a href="#access"   class="nav-link" style="font-size:0.78rem;">アクセス</a>
+        <a href="#contact"  class="nav-link" style="font-size:0.78rem;">お問い合わせ</a>
+      </nav>
+
+      <!-- Hours quick -->
+      <div class="text-center md:text-right">
+        <p style="font-size:0.6rem; letter-spacing:0.35em; color:#c0392b; margin-bottom:8px;">OPEN HOURS</p>
+        <p style="font-size:0.8rem; color:#c8b89a; line-height:1.9; font-family:'Shippori Mincho',serif;">
+          L 11:00–14:30<br />
+          D 17:30–22:00<br />
+          <span style="font-size:0.7rem; color:#8c7358;">火曜定休</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Bottom -->
+    <div class="mt-10 pt-6 text-center" style="border-top:1px solid rgba(212,168,75,0.08);">
+      <p style="font-size:0.65rem; color:#8c7358; letter-spacing:0.15em;">© 2024 麺屋 醤 Menya Shou. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════ -->
+<script>
+  // ── Hamburger toggle ──
+  document.getElementById('mob-btn').addEventListener('click', () => {
+    const nav = document.getElementById('mob-nav');
+    nav.classList.toggle('hidden');
+  });
+
+  // ── Intersection Observer: fade-up ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  // Observe all .fade-up elements (except hero which animates on load)
+  document.querySelectorAll('.fade-up').forEach(el => {
+    // Hero elements: trigger immediately
+    if (el.closest('.hero-content')) {
+      setTimeout(() => el.classList.add('visible'), 100);
+    } else {
+      observer.observe(el);
+    }
+  });
+
+  // ── Nav: active highlight on scroll ──
+  const sections = ['kodawari','menu','gallery','seating','voice','access'];
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(link => {
+          link.style.color = link.getAttribute('href') === '#' + entry.target.id ? '#c0392b' : '';
+        });
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) sectionObserver.observe(el);
+  });
+</script>
+
+<script>
+/* ── Contact Form: バリデーション & Formspree 非同期送信 ── */
+(function () {
+  const form    = document.getElementById('contact-form');
+  const thanks  = document.getElementById('contact-thanks');
+  const submit  = document.getElementById('contact-submit');
+  if (!form) return;
+
+  /* 今日の日付（過去日チェック用） */
+  const todayStr = new Date().toISOString().split('T')[0];
+  const dateInput = form.querySelector('input[name="visit_date"]');
+  if (dateInput) dateInput.min = todayStr;
+
+  function setError(id, msg) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg;
+    /* 対応インプットに error クラスを付与 */
+    const input = el.previousElementSibling;
+    if (input) {
+      msg ? input.classList.add('input-error') : input.classList.remove('input-error');
+    }
+  }
+
+  function validate() {
+    let ok = true;
+
+    /* お名前 */
+    const name = form.querySelector('[name="name"]').value.trim();
+    if (!name) { setError('err-name', 'お名前を入力してください。'); ok = false; }
+    else        { setError('err-name', ''); }
+
+    /* 電話番号 */
+    const phone = form.querySelector('[name="phone"]').value.trim();
+    if (!phone) {
+      setError('err-phone', '電話番号を入力してください。'); ok = false;
+    } else if (!/^[\d\-\+\(\)\s]{7,15}$/.test(phone)) {
+      setError('err-phone', '正しい電話番号を入力してください。'); ok = false;
+    } else { setError('err-phone', ''); }
+
+    /* メール */
+    const email = form.querySelector('[name="email"]').value.trim();
+    if (!email) {
+      setError('err-email', 'メールアドレスを入力してください。'); ok = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError('err-email', '正しいメールアドレスを入力してください。'); ok = false;
+    } else { setError('err-email', ''); }
+
+    /* 来店日（入力がある場合のみ過去日チェック） */
+    const date = form.querySelector('[name="visit_date"]').value;
+    if (date && date < todayStr) {
+      setError('err-date', '過去の日付は選択できません。'); ok = false;
+    } else { setError('err-date', ''); }
+
+    return ok;
+  }
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    if (!validate()) return;
+
+    submit.disabled = true;
+    submit.style.opacity = '0.6';
+    submit.textContent = '送信中…';
+
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (res.ok) {
+        form.style.display = 'none';
+        thanks.style.display = 'block';
+        thanks.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        const data = await res.json();
+        const msg = (data.errors || []).map(e => e.message).join(' ') || '送信に失敗しました。時間をおいて再度お試しください。';
+        alert(msg);
+        submit.disabled = false;
+        submit.style.opacity = '';
+        submit.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg> 送信する';
+      }
+    } catch {
+      alert('ネットワークエラーが発生しました。接続を確認してください。');
+      submit.disabled = false;
+      submit.style.opacity = '';
+      submit.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg> 送信する';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
